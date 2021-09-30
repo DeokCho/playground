@@ -1,2 +1,2 @@
-export { Input, Loading } from "./atoms";
+export { Input } from "./atoms";
 export { LabelInput } from "./organisms";
