@@ -1,9 +1,15 @@
-import React from "react";
+import { useEffect } from "react";
+import {
+  Provider,
+  useLocalStore,
+  observer,
+} from "mobx-react";
 import { Switch, Route } from "react-router-dom";
 import lodable from "@loadable/component";
 import TopBarProgress from "react-topbar-progress-indicator";
-
-import Navbar from "src/components/templates/NavBar";
+import TopBar from "src/topBar/TopBar";
+import QRCode from "react-qr-code";
+import Login from "src/login/components/Login";
 
 const SignUpComponent = lodable(
   () => import("src/signup/components/SignUp"),
@@ -11,24 +17,56 @@ const SignUpComponent = lodable(
 );
 
 const App = () => {
+  const state = useLocalStore(() => ({
+    loginComplete: false,
+    uuid: "",
+  }));
+  const loginCheck = (vaild: boolean, uuid: string) => {
+    if (vaild) {
+      state.loginComplete = true;
+      state.uuid = uuid;
+      console.log("uuid : ", uuid);
+    }
+    // localStorage.getItem("");
+  };
+  useEffect(() => {}, []);
   return (
-    <div>
-      <div>탑바</div>
-      <Navbar />
-      <div>사이드바</div>
-      <Switch>
-        <Route
-          path={"/"}
-          exact
-          render={() => <div>여기는 홈입니다.</div>}
+    <Provider>
+      {!state.loginComplete ? (
+        <Login
+          tryLogin={(
+            id: string,
+            password: string,
+            uuid: string,
+          ) =>
+            loginCheck(
+              Boolean(id && password && uuid),
+              uuid,
+            )
+          }
         />
-        <Route
-          path={"/signup"}
-          component={SignUpComponent}
-        />
-      </Switch>
-    </div>
+      ) : (
+        <div>
+          <TopBar />
+          <Switch>
+            <Route
+              path={"/"}
+              exact
+              render={() => <div>여기는 홈입니다.</div>}
+            />
+            <Route
+              path={"/signup"}
+              component={SignUpComponent}
+            />
+            <Route
+              path={"/qr"}
+              render={() => <QRCode value="test" />}
+            />
+          </Switch>
+        </div>
+      )}
+    </Provider>
   );
 };
 
-export default App;
+export default observer(App);
