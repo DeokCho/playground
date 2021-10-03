@@ -1,8 +1,8 @@
 import React from "react";
-import { Form, FormGroup, Label } from "reactstrap";
+import { Form } from "reactstrap";
 import { observer, useLocalStore } from "mobx-react";
 
-import { Input, LabelInput } from "src/components";
+import { LabelInput } from "src/components";
 import SignUpStore from "src/signup/store/SignUpStore";
 
 const SignUp: React.FC = () => {
@@ -14,7 +14,7 @@ const SignUp: React.FC = () => {
 
   React.useEffect(() => {
     Store.getInfo();
-  }, []);
+  }, [Store]);
 
   return (
     <Form>
