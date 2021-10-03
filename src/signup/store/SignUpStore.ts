@@ -9,7 +9,6 @@ class SignUpStore {
       this.info = new SignUpModel({
         ...mockData.personalInfo,
       });
-      console.log("this.info : ", this.info);
     } catch (err) {
       console.log("err : ", err);
     }

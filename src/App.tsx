@@ -11,6 +11,8 @@ import TopBar from "src/topBar/TopBar";
 import QRCode from "react-qr-code";
 import Login from "src/login/components/Login";
 
+import RootStore from "src/stores/RootStore";
+
 const SignUpComponent = lodable(
   () => import("src/signup/components/SignUp"),
   { fallback: <TopBarProgress /> },
@@ -25,13 +27,11 @@ const App = () => {
     if (vaild) {
       state.loginComplete = true;
       state.uuid = uuid;
-      console.log("uuid : ", uuid);
     }
-    // localStorage.getItem("");
   };
   useEffect(() => {}, []);
   return (
-    <Provider>
+    <Provider store={RootStore}>
       {!state.loginComplete ? (
         <Login
           tryLogin={(

@@ -1,11 +1,15 @@
-import React, { useEffect } from "react";
+import React, {
+  useEffect,
+  useContext,
+  createContext,
+} from "react";
 import { observer, useLocalStore } from "mobx-react";
 import { uuid } from "uuidv4";
 import {
   LabelInput,
   Button,
-  Input,
   CheckBox,
+  useInjectStore,
 } from "src/components";
 
 const hiImg =
@@ -16,30 +20,27 @@ interface PropTypes {
 }
 
 const Login: React.FC<PropTypes> = ({ tryLogin }) => {
-  const state = useLocalStore(() => ({
-    id: "",
-    password: "",
-    uuid: "",
-    checked: false,
-  }));
+  const { LoginStore } = useInjectStore();
+  const { id, password, rememberInfo, userUUID, setInfo } =
+    LoginStore;
 
   const handdleTryLogin = () => {
-    tryLogin(state.id, state.password, uuid());
-    rememberInfo(state.checked);
+    tryLogin(id, password, uuid());
+    setRememberInfo(rememberInfo);
   };
 
   const handleChecked = (checked: boolean) => {
-    state.checked = checked;
+    setInfo("rememberInfo", checked);
   };
 
-  const rememberInfo = (checked: boolean) => {
-    state.checked = checked;
+  const setRememberInfo = (checked: boolean) => {
+    setInfo("rememberInfo", checked);
     if (checked) {
       localStorage.setItem(
         "userInfo",
         JSON.stringify({
-          id: state.id,
-          password: state.password,
+          id: id,
+          password: password,
         }),
       );
     } else {
@@ -51,11 +52,12 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
     const getUserInfo = localStorage.getItem("userInfo");
     if (getUserInfo) {
       const userInfo = JSON.parse(getUserInfo);
-      state.id = userInfo.id;
-      state.password = userInfo.password;
-      state.checked = true;
+      setInfo("id", userInfo.id);
+      setInfo("password", userInfo.password);
+      setInfo("rememberInfo", true);
     }
   }, []);
+
   return (
     <>
       <h2>로그인</h2>
@@ -66,29 +68,27 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
         <div>
           <LabelInput
             title="아이디"
-            placeholder="아이디를 입력하세요"
-            text={state.id}
+            placeholder="아이디를 입력 하세요"
+            text={id}
             setText={(value) => {
-              state.id = value;
+              setInfo("id", value);
             }}
           />
           <br />
           <LabelInput
             title="비밀번호"
             placeholder="비밀번호를 입력하세요"
-            text={state.password}
+            text={password}
             setText={(value) => {
-              state.password = value;
+              setInfo("password", value);
             }}
             type="password"
           />
           <br />
           <CheckBox
-            checked={state.checked}
+            checked={rememberInfo}
             title="기억하기"
-            onClick={(checked: boolean) =>
-              handleChecked(checked)
-            }
+            onClick={handleChecked}
           />
           <br />
           <br />
