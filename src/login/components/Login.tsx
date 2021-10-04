@@ -1,9 +1,6 @@
-import React, {
-  useEffect,
-  useContext,
-  createContext,
-} from "react";
-import { observer, useLocalStore } from "mobx-react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router";
+import { observer } from "mobx-react";
 import { uuid } from "uuidv4";
 import {
   LabelInput,
@@ -15,18 +12,16 @@ import {
 const hiImg =
   "https://item.kakaocdn.net/do/97454cf911b415ca22d78cf0e1e712aff43ad912ad8dd55b04db6a64cddaf76d";
 
-interface PropTypes {
-  tryLogin: any;
-}
-
-const Login: React.FC<PropTypes> = ({ tryLogin }) => {
+const Login: React.FC = () => {
   const { LoginStore } = useInjectStore();
-  const { id, password, rememberInfo, userUUID, setInfo } =
+  const { id, password, rememberInfo, setInfo } =
     LoginStore;
+  const history = useHistory();
 
   const handdleTryLogin = () => {
-    tryLogin(id, password, uuid());
+    loginCheck(Boolean(id && password), uuid());
     setRememberInfo(rememberInfo);
+    history.push("/");
   };
 
   const handleChecked = (checked: boolean) => {
@@ -45,6 +40,13 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
       );
     } else {
       localStorage.removeItem("userInfo");
+    }
+  };
+
+  const loginCheck = (valid: boolean, uuid: string) => {
+    if (valid) {
+      setInfo("loginComplete", true);
+      setInfo("userUUID", uuid);
     }
   };
 
@@ -98,7 +100,10 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
           />
           <br />
           <br />
-          <Button title="회원가입" onClick={() => {}} />
+          <Button
+            title="회원가입"
+            onClick={() => history.push("/signup")}
+          />
           <Button
             title="비밀번호 찾기"
             onClick={() => {}}

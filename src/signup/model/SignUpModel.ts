@@ -1,29 +1,25 @@
 import { makeObservable, observable } from "mobx";
-import { uuid } from "uuidv4";
 
-class SignUpModel {
-  name: string = "";
-  password: string = "";
-  email: string = "";
-  address: string = "";
-  uuid: string = "";
+import { SetterModel } from "src/models";
 
+class SignUpModel extends SetterModel {
   constructor(params?: any) {
+    super(params);
     makeObservable(this, {
       name: observable,
       password: observable,
       email: observable,
       address: observable,
       uuid: observable,
+      toggle: observable,
     });
-    if (params) {
-      this.name = params.name;
-      this.password = params.password;
-      this.email = params.email;
-      this.address = params.address;
-      this.uuid = uuid();
-    }
   }
+  name: string = "";
+  password: string = "";
+  email: string = "";
+  address: string = "";
+  uuid: string = "";
+  toggle: boolean = false;
 }
 
 export default SignUpModel;
