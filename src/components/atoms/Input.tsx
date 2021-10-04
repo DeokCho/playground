@@ -3,10 +3,11 @@ import { observer } from "mobx-react";
 
 interface PropTypes {
   text: string;
-  onChange: (arg: string) => void;
+  onChange?: (arg: string) => void;
   placeholder?: string;
   type?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 const Input: React.FC<PropTypes> = ({
@@ -15,6 +16,7 @@ const Input: React.FC<PropTypes> = ({
   placeholder = "",
   type = "text",
   className,
+  disabled,
 }) => {
   const handleOnChange = (e: any) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ const Input: React.FC<PropTypes> = ({
       value={text}
       onChange={handleOnChange}
       placeholder={placeholder}
+      disabled={disabled}
     />
   );
 };

@@ -1,45 +1,41 @@
 import React, { useEffect } from "react";
-import { observer, useLocalStore } from "mobx-react";
+import { useHistory } from "react-router";
+import { observer } from "mobx-react";
 import { uuid } from "uuidv4";
 import {
   LabelInput,
   Button,
-  Input,
   CheckBox,
+  useInjectStore,
 } from "src/components";
 
 const hiImg =
   "https://item.kakaocdn.net/do/97454cf911b415ca22d78cf0e1e712aff43ad912ad8dd55b04db6a64cddaf76d";
 
-interface PropTypes {
-  tryLogin: any;
-}
-
-const Login: React.FC<PropTypes> = ({ tryLogin }) => {
-  const state = useLocalStore(() => ({
-    id: "",
-    password: "",
-    uuid: "",
-    checked: false,
-  }));
+const Login: React.FC = () => {
+  const { LoginStore } = useInjectStore();
+  const { id, password, rememberInfo, setInfo } =
+    LoginStore;
+  const history = useHistory();
 
   const handdleTryLogin = () => {
-    tryLogin(state.id, state.password, uuid());
-    rememberInfo(state.checked);
+    loginCheck(Boolean(id && password), uuid());
+    setRememberInfo(rememberInfo);
+    history.push("/");
   };
 
   const handleChecked = (checked: boolean) => {
-    state.checked = checked;
+    setInfo("rememberInfo", checked);
   };
 
-  const rememberInfo = (checked: boolean) => {
-    state.checked = checked;
+  const setRememberInfo = (checked: boolean) => {
+    setInfo("rememberInfo", checked);
     if (checked) {
       localStorage.setItem(
         "userInfo",
         JSON.stringify({
-          id: state.id,
-          password: state.password,
+          id: id,
+          password: password,
         }),
       );
     } else {
@@ -47,15 +43,23 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
     }
   };
 
+  const loginCheck = (valid: boolean, uuid: string) => {
+    if (valid) {
+      setInfo("loginComplete", true);
+      setInfo("userUUID", uuid);
+    }
+  };
+
   useEffect(() => {
     const getUserInfo = localStorage.getItem("userInfo");
     if (getUserInfo) {
       const userInfo = JSON.parse(getUserInfo);
-      state.id = userInfo.id;
-      state.password = userInfo.password;
-      state.checked = true;
+      setInfo("id", userInfo.id);
+      setInfo("password", userInfo.password);
+      setInfo("rememberInfo", true);
     }
   }, []);
+
   return (
     <>
       <h2>로그인</h2>
@@ -66,29 +70,27 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
         <div>
           <LabelInput
             title="아이디"
-            placeholder="아이디를 입력하세요"
-            text={state.id}
+            placeholder="아이디를 입력 하세요"
+            text={id}
             setText={(value) => {
-              state.id = value;
+              setInfo("id", value);
             }}
           />
           <br />
           <LabelInput
             title="비밀번호"
             placeholder="비밀번호를 입력하세요"
-            text={state.password}
+            text={password}
             setText={(value) => {
-              state.password = value;
+              setInfo("password", value);
             }}
             type="password"
           />
           <br />
           <CheckBox
-            checked={state.checked}
+            checked={rememberInfo}
             title="기억하기"
-            onClick={(checked: boolean) =>
-              handleChecked(checked)
-            }
+            onClick={handleChecked}
           />
           <br />
           <br />
@@ -98,7 +100,10 @@ const Login: React.FC<PropTypes> = ({ tryLogin }) => {
           />
           <br />
           <br />
-          <Button title="회원가입" onClick={() => {}} />
+          <Button
+            title="회원가입"
+            onClick={() => history.push("/signup")}
+          />
           <Button
             title="비밀번호 찾기"
             onClick={() => {}}

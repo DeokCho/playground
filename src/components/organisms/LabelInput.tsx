@@ -7,9 +7,10 @@ import { Input } from "src/components";
 interface PropTypes {
   title?: string;
   text: string;
-  setText: (arg: string) => void;
+  setText?: (arg: string) => void;
   type?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 const LabelInput: React.FC<PropTypes> = ({
@@ -18,6 +19,7 @@ const LabelInput: React.FC<PropTypes> = ({
   setText,
   type = "text",
   placeholder,
+  disabled,
 }) => {
   return (
     <FormGroup>
@@ -25,9 +27,12 @@ const LabelInput: React.FC<PropTypes> = ({
       <br />
       <Input
         text={text}
-        onChange={(value: string) => setText(value)}
+        onChange={(value: string) =>
+          setText && setText(value)
+        }
         type={type}
         placeholder={placeholder}
+        disabled={disabled}
       />
     </FormGroup>
   );
