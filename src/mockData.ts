@@ -9,9 +9,8 @@ const mockData = {
   navData: [
     { title: "Home", url: "/" },
     { title: "News", url: "/news" },
-    { title: "About", url: "/about" },
-    { title: "Contact", url: "/contact" },
     { title: "QR", url: "/qr" },
+    { title: "POST", url: "/post" },
   ],
 };
 

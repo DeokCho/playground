@@ -8,6 +8,7 @@ interface PropTypes {
   type?: string;
   className?: string;
   disabled?: boolean;
+  keydown?: () => any;
 }
 
 const Input: React.FC<PropTypes> = ({
@@ -17,11 +18,17 @@ const Input: React.FC<PropTypes> = ({
   type = "text",
   className,
   disabled,
+  keydown,
 }) => {
   const handleOnChange = (e: any) => {
     e.preventDefault();
     onChange && onChange(e.target.value);
   };
+
+  const handleOnKeyDown = (e: any) => {
+    e.key === "Enter" && keydown && keydown();
+  };
+
   return (
     <input
       className={className}
@@ -30,6 +37,7 @@ const Input: React.FC<PropTypes> = ({
       onChange={handleOnChange}
       placeholder={placeholder}
       disabled={disabled}
+      onKeyPress={handleOnKeyDown}
     />
   );
 };

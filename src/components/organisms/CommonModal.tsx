@@ -6,7 +6,6 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import { observer } from "mobx-react";
 
 interface PropTypes {
   okBtnText?: string;

@@ -1,4 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
+import { uuid } from "uuidv4";
 
 class LoginStore {
   constructor(params) {
@@ -9,6 +10,7 @@ class LoginStore {
       userUUID: observable,
       loginComplete: observable,
       setInfo: action,
+      resetUUid: action,
     });
     if (params) {
       this.info = params;
@@ -22,6 +24,9 @@ class LoginStore {
   loginComplete = false;
   setInfo = (key, value) => {
     this[key] = value;
+  };
+  resetUUid = () => {
+    this.userUUID = uuid();
   };
 }
 

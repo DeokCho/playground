@@ -2,11 +2,9 @@ import { Provider, observer } from "mobx-react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import lodable from "@loadable/component";
 import TopBarProgress from "react-topbar-progress-indicator";
-import QRCode from "react-qr-code";
 
 import TopBar from "src/topBar/TopBar";
 import RootStore from "src/stores/RootStore";
-import { useInjectStore } from "src/components/utils";
 
 const SignUpComponent = lodable(
   () => import("src/signup/components/SignUp"),
@@ -18,11 +16,20 @@ const LoginComponent = lodable(
   { fallback: <TopBarProgress /> },
 );
 
-const App = () => {
-  const { LoginStore } = useInjectStore();
+const QrComponent = lodable(
+  () => import("src/qr/components/Qr"),
+  { fallback: <TopBarProgress /> },
+);
 
+const PostComponent = lodable(
+  () => import("src/post/components/Post"),
+  { fallback: <TopBarProgress /> },
+);
+
+const App = () => {
   return (
     <Provider store={RootStore}>
+      <TopBar />
       <Switch>
         <Route
           path="/login"
@@ -32,7 +39,6 @@ const App = () => {
           path={"/signup"}
           render={() => <SignUpComponent />}
         />
-        <TopBar />
         <Route
           path={"/"}
           exact
@@ -41,9 +47,12 @@ const App = () => {
 
         <Route
           path={"/qr"}
-          render={() => (
-            <QRCode value={LoginStore.userUUID} />
-          )}
+          render={() => <QrComponent />}
+        />
+
+        <Route
+          path={"/post"}
+          render={() => <PostComponent />}
         />
         <Redirect path="*" to="/" />
       </Switch>
