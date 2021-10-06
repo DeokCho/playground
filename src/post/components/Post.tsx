@@ -27,6 +27,8 @@ const Post = () => {
     PostStore.getList();
   }, []);
 
+  console.log("푸쉬테스트");
+
   const SelectedCompanyTr = () => {
     return (
       <tr>
