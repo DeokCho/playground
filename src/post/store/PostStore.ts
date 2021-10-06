@@ -1,17 +1,19 @@
 import {
   makeObservable,
-  makeAutoObservable,
   action,
   observable,
-  set,
   toJS,
+  set,
 } from "mobx";
 
 import postApis from "src/post/components/apis/PostApis";
 
-class CompanyInfo {
+export class CompanyInfo {
   constructor(params?: CompanyInfo) {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      Name: observable,
+      Code: observable,
+    });
     if (params) {
       set(this, params);
     }
@@ -25,12 +27,18 @@ class PostStore {
     makeObservable(this, {
       companyList: observable,
       viewCompanyList: observable,
+      selectedCompany: observable,
       getList: action,
       searchList: action,
+      selectCompany: action,
+      setInfo: action,
     });
   }
+
   companyList: CompanyInfo[] = [];
   viewCompanyList: CompanyInfo[] = [];
+  selectedCompany: CompanyInfo = new CompanyInfo();
+
   getList = async () => {
     try {
       const { data } = await postApis.getCompanyList();
@@ -42,11 +50,20 @@ class PostStore {
       this.viewCompanyList = [...this.companyList];
     } catch (err) {}
   };
+
   searchList = (text: string) => {
     this.viewCompanyList = this.companyList.filter(
       ({ Name }) =>
         Name.toUpperCase().includes(text.toUpperCase()),
     );
+  };
+
+  selectCompany = (params: CompanyInfo) => {
+    this.selectedCompany = new CompanyInfo(params);
+  };
+
+  setInfo = (key: string, value: any) => {
+    this[key] = value;
   };
 }
 

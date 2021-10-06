@@ -8,7 +8,7 @@ const axiosModule = (
   return axios({
     url,
     method,
-    data,
+    params: { ...data },
   })
     .then((response) => response)
     .catch((err) => err);

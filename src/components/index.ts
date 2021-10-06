@@ -6,3 +6,4 @@ export {
   SearchBar,
 } from "./organisms";
 export { useInjectStore } from "./utils";
+export { SetterModel } from "../models";
